@@ -39,7 +39,7 @@ function injectorElement(fnNoID){
     };
 }
 
-function setChildren(element, elements){Array.prototype.slice.call(elements).map(function(e, i, a){ if (e._parent === element._ID) element._children.push(e); }); }
+function setChildren(element, elements){Array.prototype.slice.call(elements).forEach(function(e, i, a){ if (e._parent === element._ID) element._children.push(e); }); }
 
 function Injector(defaultID){
     this.defaultID = defaultID;
@@ -48,6 +48,15 @@ function Injector(defaultID){
         return this.defaultID+'_'+this.defaultIDIndex++;
     };
 }
+
+var cGenIndex = 0;
+var lastCycleIndex = 0;
+
+function* cGen(coefficientArray, cycleIndex) {
+    if (cycleIndex !== lastCycleIndex) {cGenIndex = 0; lastCycleIndex = cycleIndex;}
+    if (cGenIndex < coefficientArray.length) yield coefficientArray[cGenIndex++]; else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested"
+}
+
 Injector.prototype = {
     _setAllChildren: function(array){
         array.map(function(e, i, a){ setChildren(e, a); });
@@ -58,10 +67,12 @@ Injector.prototype = {
             this._add(true, 'existing HTML', affix); 
         }
     },
-    addChild: function(parent, affix, quantity, coefficient){
+    addChild: function(parent, affix, quantity, coefficients){
         var number = quantity || 1;
+        var cGenIndex = 0;
+        var lastCycleIndex = 0;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, affix.replace(/MULT/g, coefficient*(number-i))); 
+            this._add(false, parent, affix.replace(/MULT/g, cGen(coefficients, i).next().value); 
         }
     },
     _add: function(isBase, parent, affix){
