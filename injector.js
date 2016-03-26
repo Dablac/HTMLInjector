@@ -40,6 +40,15 @@ function injectorElement(fnNoID){
 
 function setChildren(element, elements){Array.prototype.slice.call(elements).forEach(function(e, i, a){ if (e._parent === element._ID) element._children.push(e); }); }
 
+var cGenIndex = 1;
+var lastCycleIndex = 0;
+function* cGen(coefficientArray, cycleIndex) {
+    if (cycleIndex !== lastCycleIndex){ cGenIndex = 1; lastCycleIndex = cycleIndex; }
+    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[(cGenIndex++)-1]; else {
+    console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the number of replacements being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
+    }
+}
+
 function Injector(defaultID){
     this.defaultID = defaultID;
     this.defaultIDIndex = 0;
@@ -47,16 +56,6 @@ function Injector(defaultID){
         return this.defaultID+'_'+this.defaultIDIndex++;
     };
 }
-
-var cGenIndex = 1;
-var lastCycleIndex = 0;
-function* cGen(coefficientArray, cycleIndex) {
-    if (cycleIndex !== lastCycleIndex){ cGenIndex = 1; lastCycleIndex = cycleIndex; }
-    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[cGenIndex++]; else {
-    console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the number of replacements being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
-    }
-}
-
 Injector.prototype = {
     _setAllChildren: function(array){
         array.map(function(e, i, a){ setChildren(e, a); });
