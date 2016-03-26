@@ -1,4 +1,3 @@
-/* jshint esnext:true */
 function injectorElement(fnNoID){
     this.noID = fnNoID;
     this._setParent = function(parentID){
@@ -25,7 +24,6 @@ function injectorElement(fnNoID){
         this._alreadyStringed = false;
         var possibleChild = affix.split(this._closingTag)[0].split('>')[1];
         if (!!possibleChild) this._children.push(possibleChild);
-        //console.log("split(%o):\n this._parent = %o,\n this._tagName = %o,\n this._attributes = %o,\n this._ID = %o,\n this._children = %o", affix, this._parent, this._tagName, this._attributes, this._ID, this._children);
     };
     this.assembleString = function(assembleCallback){
         if (this._alreadyStringed) return '';
@@ -52,14 +50,9 @@ function Injector(defaultID){
 
 var cGenIndex = 1;
 var lastCycleIndex = 0;
-
 function* cGen(coefficientArray, cycleIndex) {
-    if (cycleIndex !== lastCycleIndex) {cGenIndex = 1; lastCycleIndex = cycleIndex;}
-    if (cGenIndex < coefficientArray.length){ 
-        var value = cycleIndex*coefficientArray[cGenIndex++];
-        console.log('cycleIndex = %o, yield = %o', cycleIndex, value);
-        yield value; 
-    }else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested";
+    if (cycleIndex !== lastCycleIndex){ cGenIndex = 1; lastCycleIndex = cycleIndex; }
+    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[cGenIndex++]; else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested";
 }
 
 Injector.prototype = {
@@ -74,10 +67,8 @@ Injector.prototype = {
     },
     addChild: function(parent, affix, quantity, coefficients){
         var number = quantity || 1;
-        var cGenIndex = 0;
-        var lastCycleIndex = 0;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, affix.replace(/MULT/g, cGen(coefficients, i).next().value)); 
+            this._add(false, parent, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
         }
     },
     _add: function(isBase, parent, affix){
