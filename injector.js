@@ -48,10 +48,12 @@ function injectorElement(fnNoID){
 
 function setChildren(element, elements){Array.prototype.slice.call(elements).forEach(function(e, i, a){ if (e._parent === element._ID) element._children.push(e); }); }
 
+var lastCycleIndex = 0;
 var cGenIndex = 0;
-var lastcCycleIndex = 0;
+var sGenIndex = 0;
+
 function* cGen(coefficientArray, cycleIndex) {
-    if (cycleIndex !== lastcCycleIndex){ cGenIndex = 0; lastcCycleIndex = cycleIndex; }
+    if (cycleIndex !== lastCycleIndex){ cGenIndex = 0; lastCycleIndex = cycleIndex; }
     if (cGenIndex < coefficientArray.length){
         if (coefficientArray[cGenIndex].constructor === Array) yield (cycleIndex+coefficientArray[cGenIndex][1]) * coefficientArray[cGenIndex++][0]; else yield (cycleIndex+1) * coefficientArray[cGenIndex++];
     } else {
@@ -59,9 +61,8 @@ function* cGen(coefficientArray, cycleIndex) {
     }
 }
 
-var sGenIndex = 0;
 function* sGen(stringArray, cycleIndex) {
-    if (cycleIndex !== lastsCycleIndex){ sGenIndex = 0; lastsCycleIndex = cycleIndex; }
+    if (cycleIndex !== lastCycleIndex){ sGenIndex = 0; lastCycleIndex = cycleIndex; }
     if (sGenIndex < stringArray.length) yield stringArray[sGenIndex++]; else {
     console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
     }
