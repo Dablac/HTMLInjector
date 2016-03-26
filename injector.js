@@ -25,7 +25,7 @@ function injectorElement(fnNoID){
             this._ID = noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].slice(1).split(' ')[0].slice(0, -1);  
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
-            if (this._hasClones) this._ID += this._cloneIndex;
+            if (this._hasClones) this._ID += '_'+this._cloneIndex;
         }else this._ID = this.noID();
         this._closingTag = '</'+this._tagName+'>';
         this._children = [];
