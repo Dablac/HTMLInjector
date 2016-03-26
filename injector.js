@@ -1,3 +1,4 @@
+/* jshint esnext:true */
 function injectorElement(fnNoID){
     this.noID = fnNoID;
     this._setParent = function(parentID){
