@@ -81,6 +81,7 @@ Injector.prototype = {
         e._setParent(parent);
         e._setIsBase(isBase);
         e.split(affix, hasClones, cloneIndex);
+        console.log(this);
         this[e._ID] = e;
     },
     _elementArray: function(){
