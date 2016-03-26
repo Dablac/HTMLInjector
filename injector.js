@@ -42,10 +42,10 @@ function setChildren(element, elements){Array.prototype.slice.call(elements).for
 
 var cGenIndex = 1;
 var lastCycleIndex = 0;
-function* cGen(coefficientArray, cycleIndex) {
+function* cGen(coefficientArray, cycleIndex, offset) {
     if (cycleIndex !== lastCycleIndex){ cGenIndex = 1; lastCycleIndex = cycleIndex; }
-    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[(cGenIndex++)-1]; else {
-    console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the number of replacements being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
+    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[offset+cGenIndex++]; else {
+    console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, (offset+cGenIndex));
     }
 }
 
