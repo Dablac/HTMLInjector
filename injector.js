@@ -62,10 +62,11 @@ Injector.prototype = {
     _setAllChildren: function(array){
         array.map(function(e, i, a){ setChildren(e, a); });
     },
-    addBase: function(affix, quantity){
+    addBase: function(affix, quantity, coefficients){
         var number = quantity || 1;
+        var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
-            this._add(true, 'existing HTML', affix); 
+            this._add(false, 'existing HTML', hasClones, i, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
         }
     },
     addChild: function(parent, affix, quantity, coefficients){
