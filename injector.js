@@ -49,12 +49,23 @@ function Injector(defaultID){
     };
 }
 
+function report(args){
+    if (!!args.callee.caller) if (!!args.callee.caller.name) console.log('%o called %o(%o)', args.callee.caller.name, args.callee.name, args); else console.log('Unknown caller function called %o(%o)', args.callee.name, args);
+}
+
 var cGenIndex = 0;
 var lastCycleIndex = 0;
 
 function* cGen(coefficientArray, cycleIndex) {
     if (cycleIndex !== lastCycleIndex) {cGenIndex = 0; lastCycleIndex = cycleIndex;}
-    if (cGenIndex < coefficientArray.length) yield coefficientArray[cGenIndex++]; else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested"
+    if (cGenIndex < coefficientArray.length){ 
+        var reportArray = []; 
+        reportArray = arguments; 
+        var value = cycleIndex*coefficientArray[cGenIndex++]; 
+        reportArray.push('yield ='+value);
+        report(reportArray);
+        yield value; 
+    }else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested"
 }
 
 Injector.prototype = {
