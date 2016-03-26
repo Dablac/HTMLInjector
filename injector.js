@@ -53,8 +53,7 @@ var lastCycleIndex = 0;
 function* cGen(coefficientArray, cycleIndex) {
     if (cycleIndex !== lastCycleIndex){ cGenIndex = 1; lastCycleIndex = cycleIndex; }
     if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[cGenIndex++]; else {
-    var errorString = "Iterated element multiplying coefficient array ("+coefficientArray+") length ("+coefficientArray.length+") does not contain as many values as the number of replacements being requested ("+cGenIndex+").";
-    throw errorString;
+    console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the number of replacements being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
     }
 }
 
