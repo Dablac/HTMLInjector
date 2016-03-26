@@ -52,7 +52,9 @@ var cGenIndex = 0;
 var lastcCycleIndex = 0;
 function* cGen(coefficientArray, cycleIndex) {
     if (cycleIndex !== lastcCycleIndex){ cGenIndex = 0; lastcCycleIndex = cycleIndex; }
-    if (cGenIndex < coefficientArray.length) yield (cycleIndex+1) * coefficientArray[cGenIndex++]; else {
+    if (cGenIndex < coefficientArray.length){
+        if (coefficientArray[cGenIndex].constructor === Array) yield (cycleIndex+coefficientArray[cGenIndex][1]) * coefficientArray[cGenIndex++][0]; else yield (cycleIndex+1) * coefficientArray[cGenIndex++];
+    } else {
     console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
     }
 }
@@ -60,7 +62,7 @@ function* cGen(coefficientArray, cycleIndex) {
 var sGenIndex = 0;
 function* sGen(stringArray, cycleIndex) {
     if (cycleIndex !== lastsCycleIndex){ sGenIndex = 0; lastsCycleIndex = cycleIndex; }
-    if (sGenIndex < stringArray.length) yield (cycleIndex+1) *  stringArray[sGenIndex++]; else {
+    if (sGenIndex < stringArray.length) yield stringArray[sGenIndex++]; else {
     console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
     }
 }
