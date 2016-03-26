@@ -13,7 +13,7 @@ function injectorElement(fnNoID){
         this._cloneIndex = input;
     };
     this.split = function(affix){
-        console.log(affix, hasClones, cloneIndex);
+        console.log(this);
         this._isNonElementContent = !affix.includes('<');
         this._unaltered = affix;
         //this._tagName = affix.split('<').join('').split(' ')[0];
@@ -89,7 +89,6 @@ Injector.prototype = {
         e._setHasClones(hasClones);
         e._setCloneIndex(cloneIndex);
         e.split(affix);
-        console.log(e);
         this[e._ID] = e;
     },
     _elementArray: function(){
