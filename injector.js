@@ -66,10 +66,10 @@ Injector.prototype = {
             this._add(true, 'existing HTML', affix); 
         }
     },
-    addChild: function(parent, affix, quantity, coefficients){
+    addChild: function(parent, affix, quantity, coefficients, offset){
         var number = quantity || 1;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
+            this._add(false, parent, affix.replace(/MULT/g, function(){return cGen(coefficients, i, offset).next().value; })); 
         }
     },
     _add: function(isBase, parent, affix){
