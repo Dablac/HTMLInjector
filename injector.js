@@ -52,7 +52,8 @@ var cGenIndex = 1;
 var lastCycleIndex = 0;
 function* cGen(coefficientArray, cycleIndex) {
     if (cycleIndex !== lastCycleIndex){ cGenIndex = 1; lastCycleIndex = cycleIndex; }
-    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[cGenIndex++]; else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested";
+    if (cGenIndex < coefficientArray.length) yield cycleIndex * coefficientArray[cGenIndex++]; 
+    else throw "Iterated element multiplying coefficient array ("+coefficientArray+") length ("+coefficientArray.length+") does not contain as many values as the number of replacements being requested ("+cGenIndex+")";
 }
 
 Injector.prototype = {
