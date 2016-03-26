@@ -92,9 +92,9 @@ Injector.prototype = {
         var number = quantity || 1;
         var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, hasClones, i, affix.replace(/MULT|STRING/g, function(match, p1, p2){
-                if (p1) return cGen(coefficients, i).next().value;
-                if (p2) return sGen(strings, i).next().value; 
+            this._add(false, parent, hasClones, i, affix.replace(/MULT|STRING/g, function(match){
+                if (match === 'MULT') return cGen(coefficients, i).next().value;
+                if (match === 'STRING') return sGen(strings, i).next().value; 
             })); 
         }
     },
