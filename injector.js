@@ -49,11 +49,19 @@ function injectorElement(fnNoID){
 function setChildren(element, elements){Array.prototype.slice.call(elements).forEach(function(e, i, a){ if (e._parent === element._ID) element._children.push(e); }); }
 
 var cGenIndex = 0;
-var lastCycleIndex = 0;
+var lastcCycleIndex = 0;
 function* cGen(coefficientArray, cycleIndex) {
-    if (cycleIndex !== lastCycleIndex){ cGenIndex = 0; lastCycleIndex = cycleIndex; }
+    if (cycleIndex !== lastcCycleIndex){ cGenIndex = 0; lastcCycleIndex = cycleIndex; }
     if (cGenIndex < coefficientArray.length) yield (cycleIndex+1) * coefficientArray[cGenIndex++]; else {
     console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
+    }
+}
+
+var sGenIndex = 0;
+function* sGen(stringArray, cycleIndex) {
+    if (cycleIndex !== lastsCycleIndex){ sGenIndex = 0; lastsCycleIndex = cycleIndex; }
+    if (sGenIndex < stringArray.length) yield (cycleIndex+1) *  stringArray[sGenIndex++]; else {
+    console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
     }
 }
 
@@ -68,18 +76,24 @@ Injector.prototype = {
     _setAllChildren: function(array){
         array.map(function(e, i, a){ setChildren(e, a); });
     },
-    addBase: function(affix, quantity, coefficients){
+    addBase: function(affix, quantity, coefficients, strings){
         var number = quantity || 1;
         var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
-            this._add(true, 'existing HTML', hasClones, i, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
+            this._add(true, 'existing HTML', hasClones, i, affix.replace(/MULT|STRING/g, function(match, p1, p2){
+                if (p1) return cGen(coefficients, i).next().value;
+                if (p2) return sGen(strings, i).next().value; 
+            })); 
         }
     },
-    addChild: function(parent, affix, quantity, coefficients){
+    addChild: function(parent, affix, quantity, coefficients, strings){
         var number = quantity || 1;
         var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, hasClones, i, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
+            this._add(false, parent, hasClones, i, affix.replace(/MULT|STRING/g, function(match, p1, p2){
+                if (p1) return cGen(coefficients, i).next().value;
+                if (p2) return sGen(strings, i).next().value; 
+            })); 
         }
     },
     _add: function(isBase, parent, hasClones, cloneIndex, affix){
