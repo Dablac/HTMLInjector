@@ -59,7 +59,7 @@ function* cGen(coefficientArray, cycleIndex) {
         var value = cycleIndex*coefficientArray[cGenIndex++];
         console.log('cycleIndex = %o, yield = %o', cycleIndex, value);
         yield value; 
-    }else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested"
+    }else throw "Iterated element multiplying coefficient replacement value array length does not contain as many values as the number of replacements being requested";
 }
 
 Injector.prototype = {
@@ -77,7 +77,7 @@ Injector.prototype = {
         var cGenIndex = 0;
         var lastCycleIndex = 0;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, affix.replace(/MULT/g, cGen(coefficients, i).next().value); 
+            this._add(false, parent, affix.replace(/MULT/g, cGen(coefficients, i).next().value)); 
         }
     },
     _add: function(isBase, parent, affix){
