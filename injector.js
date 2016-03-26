@@ -6,7 +6,13 @@ function injectorElement(fnNoID){
     this._setIsBase = function(input){
         this._isBase = input;
     };
-    this.split = function(affix, hasClones, cloneIndex){
+    this._setHasClones = function(input){
+        this._hasClones = input;
+    };
+    this._setCloneIndex = function(input){
+        this._cloneIndex = input;
+    };
+    this.split = function(affix){
         console.log(affix, hasClones, cloneIndex);
         this._isNonElementContent = !affix.includes('<');
         this._unaltered = affix;
@@ -19,7 +25,7 @@ function injectorElement(fnNoID){
             this._ID = noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].slice(1).split(' ')[0].slice(0, -1);  
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
-            if (hasClones) this._ID += '_'+cloneIndex;
+            if (this._hasClones) this._ID += this._cloneIndex;
         }else this._ID = this.noID();
         this._closingTag = '</'+this._tagName+'>';
         this._children = [];
@@ -66,7 +72,7 @@ Injector.prototype = {
         var number = quantity || 1;
         var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
-            this._add(false, 'existing HTML', hasClones, i, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
+            this._add(true, 'existing HTML', hasClones, i, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
         }
     },
     addChild: function(parent, affix, quantity, coefficients){
@@ -80,7 +86,9 @@ Injector.prototype = {
         var e = new injectorElement(this.noID.bind(this));
         e._setParent(parent);
         e._setIsBase(isBase);
-        e.split(affix, hasClones, cloneIndex);
+        e._setHasClones(hasClones);
+        e._setCloneIndex(cloneIndex);
+        e.split(affix);
         console.log(e);
         this[e._ID] = e;
     },
