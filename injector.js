@@ -6,7 +6,7 @@ function injectorElement(fnNoID){
     this._setIsBase = function(input){
         this._isBase = input;
     };
-    this.split = function(affix){
+    this.split = function(affix, hasClones, cloneIndex){
         this._isNonElementContent = !affix.includes('<');
         this._unaltered = affix;
         //this._tagName = affix.split('<').join('').split(' ')[0];
@@ -18,6 +18,7 @@ function injectorElement(fnNoID){
             this._ID = noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].slice(1).split(' ')[0].slice(0, -1);  
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
+            if (hasClones) this._ID += '_'+cloneIndex;
         }else this._ID = this.noID();
         this._closingTag = '</'+this._tagName+'>';
         this._children = [];
@@ -68,16 +69,16 @@ Injector.prototype = {
     },
     addChild: function(parent, affix, quantity, coefficients){
         var number = quantity || 1;
+        var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
-            this._add(false, parent, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
+            this._add(false, parent, hasClones, i, affix.replace(/MULT/g, function(){return cGen(coefficients, i).next().value; })); 
         }
     },
-    _add: function(isBase, parent, affix){
+    _add: function(isBase, parent, hasClones, cloneIndex, affix){
         var e = new injectorElement(this.noID.bind(this));
         e._setParent(parent);
         e._setIsBase(isBase);
-        e.split(affix);
-        console.log(this);
+        e.split(affix, hasClones, cloneIndex);
         this[e._ID] = e;
     },
     _elementArray: function(){
@@ -86,11 +87,11 @@ Injector.prototype = {
         return x;
     },
     _returnBases: function(baseIds){
-        console.log('_returnBases: function(%o)', baseIds);
         var bases = [];
         for (var i = 0; i < baseIds.length; i++){
             bases.push(document.getElementById(baseIds[i]));
         }
+        console.log('_returnBases(%o): %o', baseIds, bases);
         return bases;
     },
     inject: function(setPosition, altTarget){
