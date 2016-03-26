@@ -57,6 +57,7 @@ var cGenIndex = 0;
 var lastCycleIndex = 0;
 
 function* cGen(coefficientArray, cycleIndex) {
+    report(arguments);
     if (cycleIndex !== lastCycleIndex) {cGenIndex = 0; lastCycleIndex = cycleIndex;}
     if (cGenIndex < coefficientArray.length){ 
         var reportArray = []; 
