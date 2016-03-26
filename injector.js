@@ -7,7 +7,7 @@ function injectorElement(fnNoID){
         this._isBase = input;
     };
     this.split = function(affix, hasClones, cloneIndex){
-        console.log(arguments);
+        console.log(affix, hasClones, cloneIndex);
         this._isNonElementContent = !affix.includes('<');
         this._unaltered = affix;
         //this._tagName = affix.split('<').join('').split(' ')[0];
