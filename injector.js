@@ -1,4 +1,5 @@
-function injectorElement(fnNoID, fnSetID){
+function injectorElement(fnNoID, fnSetID, logging){
+    this.logging = logging;
     this.noID = fnNoID;
     this.setID = fnSetID;
     this._setParent = function(parentID){
@@ -14,7 +15,7 @@ function injectorElement(fnNoID, fnSetID){
         this._cloneIndex = input;
     };
     this.split = function(affix){
-        console.log(this);
+        if (this.logging) console.log(this);
         this._isNonElementContent = !affix.includes('<');
         this._unaltered = affix;
         //this._tagName = affix.split('<').join('').split(' ')[0];
@@ -54,26 +55,27 @@ var lastCycleIndex = 0;
 var cGenIndex = 0;
 var sGenIndex = 0;
 
-function* cGen(coefficientArray, cycleIndex) {
+function* cGen(coefficientArray, cycleIndex, logging) {
     if (cycleIndex !== lastCycleIndex){ cGenIndex = 0; lastCycleIndex = cycleIndex; }
     if (cGenIndex < coefficientArray.length){
         if (coefficientArray[cGenIndex].constructor === Array) yield (cycleIndex+coefficientArray[cGenIndex][1]) * coefficientArray[cGenIndex++][0]; else yield (cycleIndex+1) * coefficientArray[cGenIndex++];
     } else {
-    console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
+    if (logging) console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
     }
 }
 
-function* sGen(stringArray, cycleIndex) {
+function* sGen(stringArray, cycleIndex, logging) {
     if (cycleIndex !== lastCycleIndex){ sGenIndex = 0; lastCycleIndex = cycleIndex; }
     if (sGenIndex < stringArray.length) yield stringArray[sGenIndex++]; else {
-    console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
+    if (logging) console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
     }
 }
 
-function Injector(UID, def){
+function Injector(UID, def, logging){
     this.UID = UID+'_';
     this.defaultID = def || 'IdNotSet';
     this.defaultIDIndex = 0;
+    this.logging = logging;
     this.setID = function(ID){
         return this.UID+ID;
     };
@@ -93,8 +95,8 @@ Injector.prototype = {
         var hasClones = number > 1 ? true : false;
         for (var i = 0; i < number; i++){
             this._add(true, 'existing HTML', hasClones, i, affix.replace(/MULT|STRING/g, function(match, p1, p2){
-                if (p1) return cGen(coefficients, i).next().value;
-                if (p2) return sGen(strings, i).next().value; 
+                if (p1) return cGen(coefficients, i, this.logging).next().value;
+                if (p2) return sGen(strings, i, this.logging).next().value; 
             })); 
         }
     },
@@ -127,7 +129,7 @@ Injector.prototype = {
         for (var i = 0; i < baseIds.length; i++){
             bases.push(document.getElementById(baseIds[i]));
         }
-        console.log('_returnBases(%o): %o', baseIds, bases);
+        if (this.logging) console.log('_returnBases(%o): %o', baseIds, bases);
         return bases;
     },
     inject: function(setPosition, altTarget){
