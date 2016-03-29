@@ -1,5 +1,6 @@
-function injectorElement(fnNoID){
+function injectorElement(fnNoID, fnSetID){
     this.noID = fnNoID;
+    this.setID = fnSetID;
     this._setParent = function(parentID){
         this._parent = parentID;
     };
@@ -26,6 +27,7 @@ function injectorElement(fnNoID){
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
             if (this._hasClones) this._ID += '_'+this._cloneIndex;
+            this._ID = this.setID(this._ID);
         }else this._ID = this.noID();
         this._closingTag = '</'+this._tagName+'>';
         this._children = [];
@@ -68,11 +70,15 @@ function* sGen(stringArray, cycleIndex) {
     }
 }
 
-function Injector(defaultID){
-    this.defaultID = defaultID;
+function Injector(UID, default){
+    this.UID = UID+'_';
+    this.defaultID = default || 'IdNotSet';
     this.defaultIDIndex = 0;
+    this.setID = function(ID){
+        return this.UID+ID;
+    };
     this.noID = function(){
-        return this.defaultID+'_'+this.defaultIDIndex++;
+        return this.setID(this.defaultID+'_'+this.defaultIDIndex++);
     };
 }
 Injector.prototype = {
@@ -100,7 +106,7 @@ Injector.prototype = {
         }
     },
     _add: function(isBase, parent, hasClones, cloneIndex, affix){
-        var e = new injectorElement(this.noID.bind(this));
+        var e = new injectorElement(this.noID.bind(this), this.setID.bind(this));
         e._setParent(parent);
         e._setIsBase(isBase);
         e._setHasClones(hasClones);
