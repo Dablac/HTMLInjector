@@ -70,9 +70,9 @@ function* sGen(stringArray, cycleIndex) {
     }
 }
 
-function Injector(UID, default){
+function Injector(UID, def){
     this.UID = UID+'_';
-    this.defaultID = default || 'IdNotSet';
+    this.defaultID = def || 'IdNotSet';
     this.defaultIDIndex = 0;
     this.setID = function(ID){
         return this.UID+ID;
