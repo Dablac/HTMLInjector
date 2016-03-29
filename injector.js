@@ -80,6 +80,9 @@ function Injector(UID, def){
     this.noID = function(){
         return this.setID(this.defaultID+'_'+this.defaultIDIndex++);
     };
+    this.default = function(index){
+        return this.setID(this.defaultID+'_'+index);
+    };
 }
 Injector.prototype = {
     _setAllChildren: function(array){
