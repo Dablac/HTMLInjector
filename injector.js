@@ -110,7 +110,7 @@ Injector.prototype = {
     },
     _add: function(isBase, parent, hasClones, cloneIndex, affix){
         var e = new injectorElement(this.noID.bind(this), this.setID.bind(this));
-        e._setParent(this.setID(parent));
+        if (parent.includes(this.UID)) e._setParent(parent); else e._setParent(this.setID(parent));
         e._setIsBase(isBase);
         e._setHasClones(hasClones);
         e._setCloneIndex(cloneIndex);
