@@ -49,7 +49,7 @@ function injectorElement(fnNoID, fnSetID, logging){
     };
 }
 
-function setChildren(element, elements){
+function setChildren(element, index, elements){
     Array.prototype.slice.call(elements).forEach(function(e, i, a){
         if (e._parent === element._ID) element._children.push(e); 
     }); 
@@ -64,14 +64,14 @@ function* cGen(coefficientArray, cycleIndex, logging) {
     if (cGenIndex < coefficientArray.length){
         if (coefficientArray[cGenIndex].constructor === Array) yield (cycleIndex+coefficientArray[cGenIndex][1]) * coefficientArray[cGenIndex++][0]; else yield (cycleIndex+1) * coefficientArray[cGenIndex++];
     } else {
-    if (logging) console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
+        if (logging) console.log("Iterated element multiplying coefficient array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", coefficientArray, coefficientArray.length, cGenIndex);
     }
 }
 
 function* sGen(stringArray, cycleIndex, logging) {
     if (cycleIndex !== lastCycleIndex){ sGenIndex = 0; lastCycleIndex = cycleIndex; }
     if (sGenIndex < stringArray.length) yield stringArray[sGenIndex++]; else {
-    if (logging) console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
+        if (logging) console.log("Iterated element string array (%o) length (%o) does not contain as many values as the index of the replacement being requested (%o).", stringArray, stringArray.length, sGenIndex);
     }
 }
 
@@ -92,10 +92,7 @@ function Injector(UID, def, logging){
 }
 Injector.prototype = {
     _setAllChildren: function(array){
-        array.map(function(e, i, a){ 
-            if (this.logging) console.log("_setAllChildren calling setChildren with (%o, %o)", e, a);
-            setChildren(e, a); 
-        });
+        array.forEach(setChildren);
     },
     addBase: function(affix, quantity, coefficients, strings){
         var number = quantity || 1;
@@ -146,6 +143,7 @@ Injector.prototype = {
         //  ↑ 'afterEnd' | 'beforeBegin' | 'afterBegin'
         if (!(position === 'beforeEnd' || position === 'afterEnd' || position ===  'beforeBegin' || position ===  'afterBegin')) position = 'beforeEnd';
         var iEs = this._elementArray();
+        console.log('iEs=%o',iEs);
         this._setAllChildren(iEs);
         var baseIds = [];
         var fullString = '';
@@ -168,9 +166,4 @@ function assembleStringCallback(children, string){
         if (children[x] instanceof injectorElement) string[x] = children[x].assembleString(assembleStringCallback); else string[x] = children[x];
     }
     return string;
-}
-
-function report(args, returning){
-    var ret = (typeof returning !== 'undefined') ?  returning : 'unspecified';
-    if (!!args.callee.caller) if (!!args.callee.caller.name) console.log('%o called %o(%o), returning %o', args.callee.caller.name, args.callee.name, args, ret); else console.log('Unknown caller function called %o(%o), returning %o', args.callee.name, args, ret);
 }
