@@ -50,9 +50,10 @@ function injectorElement(fnNoID, fnSetID, logging){
 }
 
 function setChildren(element, elements){
-    report(arguments);
     Array.prototype.slice.call(elements).forEach(function(e, i, a){
-        if (e._parent === element._ID) element._children.push(e); }); }
+        if (e._parent === element._ID) element._children.push(e); 
+    }); 
+}
 
 var lastCycleIndex = 0;
 var cGenIndex = 0;
@@ -91,9 +92,8 @@ function Injector(UID, def, logging){
 }
 Injector.prototype = {
     _setAllChildren: function(array){
-        report(arguments)
         array.map(function(e, i, a){ 
-            console.log("_setAllChildren calling setChildren with (%o, %o)", e, a);
+            if (this.logging) console.log("_setAllChildren calling setChildren with (%o, %o)", e, a);
             setChildren(e, a); 
         });
     },
