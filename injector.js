@@ -143,7 +143,7 @@ Injector.prototype = {
         //  ↑ 'afterEnd' | 'beforeBegin' | 'afterBegin'
         if (!(position === 'beforeEnd' || position === 'afterEnd' || position ===  'beforeBegin' || position ===  'afterBegin')) position = 'beforeEnd';
         var iEs = this._elementArray();
-        console.log('iEs=%o',iEs);
+        if (this.logging) console.log('injectorElements=%o', iEs);
         this._setAllChildren(iEs);
         var baseIds = [];
         var fullString = '';
