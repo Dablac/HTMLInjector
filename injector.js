@@ -91,7 +91,11 @@ function Injector(UID, def, logging){
 }
 Injector.prototype = {
     _setAllChildren: function(array){
-        array.map(function(e, i, a){ setChildren(e, a); });
+        report(arguments)
+        array.map(function(e, i, a){ 
+            console.log("_setAllChildren calling setChildren with (%o, %o)", e, a);
+            setChildren(e, a); 
+        });
     },
     addBase: function(affix, quantity, coefficients, strings){
         var number = quantity || 1;
