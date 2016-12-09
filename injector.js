@@ -49,7 +49,10 @@ function injectorElement(fnNoID, fnSetID, logging){
     };
 }
 
-function setChildren(element, elements){Array.prototype.slice.call(elements).forEach(function(e, i, a){ if (e._parent === element._ID) element._children.push(e); }); }
+function setChildren(element, elements){
+    report(arguments);
+    Array.prototype.slice.call(elements).forEach(function(e, i, a){
+        if (e._parent === element._ID) element._children.push(e); }); }
 
 var lastCycleIndex = 0;
 var cGenIndex = 0;
@@ -161,4 +164,9 @@ function assembleStringCallback(children, string){
         if (children[x] instanceof injectorElement) string[x] = children[x].assembleString(assembleStringCallback); else string[x] = children[x];
     }
     return string;
+}
+
+function report(args, returning){
+    var ret = (typeof returning !== 'undefined') ?  returning : 'unspecified';
+    if (!!args.callee.caller) if (!!args.callee.caller.name) console.log('%o called %o(%o), returning %o', args.callee.caller.name, args.callee.name, args, ret); else console.log('Unknown caller function called %o(%o), returning %o', args.callee.name, args, ret);
 }
