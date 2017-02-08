@@ -18,10 +18,7 @@ function injectorElement(fnNoID, fnSetID, logging){
         this._attributes = affix.replace('<'+this._tagName, '').split('>')[0];
         var noIdSelectorAffix = affix.replace(/\[id=/gi, '');
         if (noIdSelectorAffix.includes('id=')){
-            console.log('normal: %o', noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].slice(1).split(' ')[0].slice(0, -1));
-            console.log('test 1 middle slice: %o', noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].split(' ')[0].slice(0, -1));
-            console.log('test 2 end slice: %o', noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].slice(1).split(' ')[0]);
-                        this._ID = noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].slice(1).split(' ')[0].slice(0, -1);  
+            this._ID = noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].split(' ')[0]; 
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
             this._ID = this.setID(this._ID);
