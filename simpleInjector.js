@@ -19,8 +19,8 @@ function injectorElement(fnNoID, fnSetID, logging){
         if (affix.includes('id=')){
             var openQuote = affix[affix.indexOf('id=')+3];
             var hasQuotes = openQuote === '"' || openQuote === "'" ? true : false; 
-            this._ID = hasQuotes ? affix.slice(affix.indexOf('id=')+4) : affix.slice(affix.indexOf('id=')+3)
-            this._ID = hasQuotes ? this._ID.slice(0, this._ID.indexOf(openQuote)) : this._ID.slice(0, this._ID.indexOf(' '));
+            this._ID = affix.slice(affix.indexOf('id=')+(hasQuotes ? 4 : 3));
+            this._ID = this._ID.slice(0, this._ID.indexOf(hasQuotes ? openQuote : ' '));
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
             this._ID = this.setID(this._ID);
