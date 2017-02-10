@@ -16,9 +16,11 @@ function injectorElement(fnNoID, fnSetID, logging){
         this._tagName = /([a-zA-Z]+)/.exec(affix)[0];
         this._openingTag = '<'+this._tagName+' ';
         this._attributes = affix.replace('<'+this._tagName, '').split('>')[0];
-        var noIdSelectorAffix = affix.replace(/\[id=/gi, '');
-        if (noIdSelectorAffix.includes('id=')){
-            this._ID = noIdSelectorAffix.replace('<'+this._tagName, '').split('>')[0].split('id=')[1].split(' ')[0]; 
+        if (affix.includes('id=')){
+            var openQuote = affix[affix.indexOf('id=')+3];
+            var hasQuotes = openQuote === '"' || openQuote === "'" ? true : false; 
+            this._ID = hasQuotes ? affix.slice(affix.indexOf('id=')+4) : affix.slice(affix.indexOf('id=')+3)
+            this._ID = hasQuotes ? this._ID.slice(0, this._ID.indexOf(openQuote)) : this._ID.slice(0, this._ID.indexOf(' '));
             var g = this._attributes.split(this._ID);
             this._attributes = g[0].slice(0, -4)+g[1].slice(1);
             this._ID = this.setID(this._ID);
