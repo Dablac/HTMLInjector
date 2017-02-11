@@ -12,17 +12,17 @@ function injectorElement(fnNoID, fnSetID, logging){
         if (this.logging) console.log(this);
         this._isNonElementContent = !affix.includes('<');
         this._unaltered = affix;
-        //this._tagName = affix.split('<').join('').split(' ')[0];
         this._tagName = /([a-zA-Z]+)/.exec(affix)[0];
         this._openingTag = '<'+this._tagName+' ';
         this._attributes = affix.replace('<'+this._tagName, '').split('>')[0];
         if (affix.includes('id=')){
             var openQuote = affix[affix.indexOf('id=')+3];
-            var hasQuotes = openQuote === '"' || openQuote === "'" ? true : false; 
+            var hasQuotes = openQuote === '"' || openQuote === "'" ? true : false;
+            var refQuote = hasQuotes ? openQuote : '';
             this._ID = affix.slice(affix.indexOf('id=')+(hasQuotes ? 4 : 3));
             this._ID = this._ID.slice(0, this._ID.indexOf(hasQuotes ? openQuote : ' '));
-            var g = this._attributes.split(this._ID);
-            this._attributes = g[0].slice(0, -4)+g[1].slice(1);
+            var idString = 'id='+refQuote+this._ID+refQuote;
+            this._attributes = this._attributes.slice(this._attributes.indexOf(idString)+idString.length);
             this._ID = this.setID(this._ID);
         }else this._ID = this.noID();
         this._closingTag = '</'+this._tagName+'>';
@@ -50,8 +50,8 @@ function setChildren(element, index, elements){
     }); 
 }
 
-function Injector(UID, def, logging){
-    this.UID = UID+'_';
+function Injector(def, logging, UID){
+    this.UID = !!UID ? UID+'_' : '';
     this.defaultID = def || 'IdNotSet';
     this.defaultIDIndex = 0;
     this.logging = logging;
