@@ -92,8 +92,8 @@ Injector.prototype = {
         for (var i = 0; i < baseIds.length; i++){
             bases.push(document.getElementById(baseIds[i]));
         }
-        if (this.logging) console.log('_returnBases(%o): %o', baseIds, bases);
-        return bases;
+        if (this.logging) console.log('_returnBases(%o): %o; bases.length = %o', baseIds, bases, bases.length);
+        return bases.length > 1 ? bases : bases[0];
     },
     inject: function(setPosition, altTarget){
         var target = altTarget || 'body'; 
